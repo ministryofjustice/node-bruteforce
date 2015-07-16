@@ -1,0 +1,4 @@
+word
+bird
+thebirdis
+password

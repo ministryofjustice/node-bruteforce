@@ -1,0 +1,15 @@
+{
+  "name": "node-bruteforce",
+  "version": "1.0.0",
+  "description": "NodeJS HTML form bruteforcer template script",
+  "main": "bruteforce-script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeremy Fox",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^1.3.0",
+    "request": "^2.58.0"
+  }
+}
