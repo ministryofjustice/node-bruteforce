@@ -33,6 +33,7 @@ var csrfOptions = {
   url: BASE_URL,
   method: 'GET',
   headers: {},
+  rejectUnauthorized: false
 };
 
 // Define function to extract CSRF token
@@ -60,7 +61,8 @@ var loginOptions = function(password, csrfToken, cookieString) {
       'user[email]': USERNAME,
       'user[password]': password,
       'commit': 'Sign+in'
-    }
+    },
+    rejectUnauthorized: false
   };
 };
 
