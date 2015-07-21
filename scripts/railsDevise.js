@@ -25,7 +25,7 @@ var BASE_URL    = process.argv[4];
 var CONCURRENCY = process.argv[5];
 
 // Set regexp to define CSRF and login errors
-var CSRF  = /<input name="authenticity_token" type="hidden" value="(.*)" \/>/;
+var CSRF  = /<input name=\"authenticity_token\" type=\"hidden\" value=\"(.{44})\" \/>/;
 var ERROR = /Invalid email or password/ ;
 
 // Configure the CSRF token request
@@ -70,7 +70,7 @@ var tryLogin = function(password, callback) {
     var opt = loginOptions(password, token, cookieString);
     // Send a login POST
     request(opt, function (error, response, body) {
-      console.log(opt)
+
       if (!error) { 
         // If we match known regex password is incorrect
         if (response.statusCode === 200 && body.match(ERROR)) {
