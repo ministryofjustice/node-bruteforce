@@ -47,6 +47,9 @@ function launch(config) {
         }
 
         callback(capture[1], cookieString);
+      } else {
+        console.error(error.toString());
+        process.exit()
       }
     });
   }
@@ -78,11 +81,14 @@ function launch(config) {
 
     getCSRF(function(token, cookieString) {
       var opt = config.getLogin(password, token, cookieString);
+      
       // Send a login POST
       request(opt, function (error, response, body) {
         
         if (!error) { 
           processLoginResponse(response, body, password);
+        } else {
+          console.error(error.toString());
         }
         
         callback && callback();

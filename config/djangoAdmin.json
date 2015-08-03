@@ -2,8 +2,8 @@
   "capture": {
     "csrfRegex": "<input type='hidden' name='csrfmiddlewaretoken' value='(.*)' \/>",
     "loginRegex": [
-      "/Please enter the correct username/",
-      "/Please correct the error below/"
+      "Please enter the correct username",
+      "Please correct the error below"
     ]
   },
   "csrf": {

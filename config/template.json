@@ -1,6 +1,6 @@
 {
   "capture": {
-    "csrfRegex": "//",
+    "csrfRegex": "",
     "loginRegex": []
   },
   "csrf": {
