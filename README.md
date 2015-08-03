@@ -19,7 +19,7 @@ Simple bruteforce scripts for web applications utilizing node concurrency! Last 
 
 ```shell
   $ npm install
-  $ chmod 755 scripts/djangoAdmin.js
+  $ chmod 755 scripts/railsDevise.js
   $ ./scripts/railsDevise.js
     
     NodeJS Rails Devise Login Bruteforce 1.0

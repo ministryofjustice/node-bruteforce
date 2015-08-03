@@ -1,22 +1,3 @@
-#! /usr/bin/env node
-
-// Module Dependencies
-var request  = require('request');
-var fs       = require('fs');
-var readline = require('readline');
-var stream   = require('stream');
-var es       = require('event-stream');
-var async    = require('async');
-
-// Usage message
-if (process.argv.length !== 6) {
-  console.log(
-    'NodeJS Rails Devise Login Bruteforce 1.0\n' +
-    'Usage: ./railsDevise.js <username> <wordlist> <target url> <max concurrent requests>' 
-  );
-
-  process.exit();
-}
 
 // Set user, filepath, url from CLI args
 var USERNAME    = process.argv[2];

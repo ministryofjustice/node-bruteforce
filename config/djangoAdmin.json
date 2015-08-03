@@ -1,0 +1,25 @@
+{
+  "captureOptions": {
+    "csrfRegex": "/<input type='hidden' name='csrfmiddlewaretoken' value='(.*)' \/>/",
+    "loginRegex": [
+      "/Please enter the correct username/",
+      "/Please correct the error below/"
+    ]
+  },
+  "csrfRequest": {
+    "url": "^URL^",
+    "method": "GET",
+    "headers": {}
+  },
+  "loginRequest": {
+    "path": "^URL^",
+    "method": "POST",
+    "headers": {
+      "Referer": "^URL^",
+      "Cookie": "csrftoken=^TOKEN^"
+    },
+    "form": {
+      
+    }
+  }
+}
