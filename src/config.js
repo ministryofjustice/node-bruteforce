@@ -26,7 +26,7 @@ Config.prototype.getAdvanced = function() {
 };
 
 Config.prototype.getLogin = function(password, token, cookie) {
-  var raw = this.rawAdvanced
+  var raw = this.rawAdvanced;
 
   raw = gsub(raw, this.ANCHORS.pass, password);
   raw = gsub(raw, this.ANCHORS.token, token);
@@ -44,4 +44,4 @@ function gsub(sTarget, sFind, sReplace) {
   var reFind = new RegExp(sFind, 'g');
 
   return sTarget.replace(reFind, sReplace);
-};
+}

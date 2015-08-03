@@ -1,5 +1,7 @@
 ## Bringing the power of NodeJS to web form bruteforcing...
 
+[![Code Climate](https://codeclimate.com/github/foxjerem/node-bruteforce/badges/gpa.svg)](https://codeclimate.com/github/foxjerem/node-bruteforce)
+
 Configured for Rails Devise and Django Admin interface but supports custom configuration for other variations. Option to set the maximum number of concurrent requests to prevent overloading the target server.
 
 Please use responsibly!

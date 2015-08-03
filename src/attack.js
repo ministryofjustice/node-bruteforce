@@ -13,7 +13,7 @@ function launch(config) {
     console.log('[+] Finished');
   };
 
-  console.log('[+] Reading wordlist...')
+  console.log('[+] Reading wordlist...');
 
   fs.createReadStream(config.wordlist)
     .on('error', function() {
@@ -37,19 +37,19 @@ function launch(config) {
 
     request(reqConfig.csrf, function (error, response, body) {
 
-      if (!error && response.statusCode == 200) {
+      if (!error && response.statusCode === 200) {
         var cookieString = response.headers['set-cookie'][0];
         var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
 
         if (!capture) {
           console.log('[-] CSRF token not found\n[-] Debug info:\n');
-          process.exit();
+          process.exit(1);
         }
 
         callback(capture[1], cookieString);
       } else {
         console.error(error.toString());
-        process.exit()
+        process.exit(1);
       }
     });
   }
@@ -67,7 +67,7 @@ function launch(config) {
     } else if (response.statusCode < 400) {
 
       console.log('[+] FOUND: ' + password  + '\n[+] Shutting down....');
-      process.exit();
+      process.exit(1);
     
     } else {
       
@@ -95,6 +95,6 @@ function launch(config) {
       });
     });
   }
-};
+}
 
 exports.launch = launch;

@@ -62,7 +62,7 @@ validate(
 validate(
   (program.type || program.config),
   'Select either a supported framework or provide a config file'
-)
+);
 
 // =====================================================================
 //  MAIN ===============================================================
