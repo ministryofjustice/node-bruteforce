@@ -9,7 +9,8 @@
   "csrfRequest": {
     "url": "^URL^",
     "method": "GET",
-    "headers": {}
+    "headers": {},
+    "rejectUnauthorized": false
   },
   "loginRequest": {
     "path": "^URL^",
@@ -19,7 +20,11 @@
       "Cookie": "csrftoken=^TOKEN^"
     },
     "form": {
-      
-    }
+      "csrfmiddlewaretoken": "^TOKEN^",
+      "username": "^USER^",
+      "password": "^PASS^",
+      "next": "/admin/"
+    },
+    "rejectUnauthorized": false
   }
 }

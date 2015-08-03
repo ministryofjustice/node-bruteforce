@@ -1,9 +1,7 @@
 {
   "captureOptions": {
-    "csrfRegex": "/<input name=\"authenticity_token\" type=\"hidden\" value=\"(.{44})\" \/>/",
-    "loginRegex": [
-      "/Invalid email or password/"
-    ]
+    "csrfRegex": "//",
+    "loginRegex": []
   },
   "csrfRequest": {
     "url": "^URL^",
@@ -19,9 +17,8 @@
     },
     "form": {
       "authenticity_token": "^TOKEN^",
-      "user[email]": "^USER^",
-      "user[password]": "^PASS^",
-      "commit": "Sign+in"
+      "user": "^USER^",
+      "password": "^PASS^",
     },
     "rejectUnauthorized": false
   }

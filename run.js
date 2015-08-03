@@ -1,23 +1,19 @@
 #! /usr/bin/env node
 
 // Module Dependencies
-var request = require('request');
-var fs      = require('fs');
-var stream  = require('stream');
-var es      = require('event-stream');
-var async   = require('async');
-var program = require('commander');
+var program    = require('commander');
+// var bruteforce = require('./src/bruteforce.js');
 
 // Define option switches
 program
   .version('1.0.0')
   .description('NodeJS HTTP(S) Login Form Bruteforcer')
-  .option('-u, --username', 'login username')
-  .option('-w, --wordlist', 'dictionary file')
-  .option('-t, --target', 'target sign in url')
-  .option('-N, --num-requests', 'maximum concurrent requests')
-  .option('-T, --type <framework>', 'specify target framework (rails|django)')
-  .option('-c, --config', 'custom .json config file')
+  .option('-u, --username <string>', 'login username')
+  .option('-w, --wordlist <file>', 'dictionary file')
+  .option('-t, --target <url>', 'target sign in url')
+  .option('-N, --num-requests [n]', 'maximum concurrent requests (default 25)', 25)
+  .option('-T, --type [framework]', 'specify target framework', /^(rails|django)$/i, false)
+  .option('-c, --config [file]', 'custom .json config file')
 
 // Add examples to help menu
 program.on('--help', function() {
@@ -29,7 +25,13 @@ program.on('--help', function() {
 program.parse(process.argv);
 
 // Display help if no arguments passed
-if (!program.args.length) {
+if (!process.argv.slice(2).length) {
+  program.help();
+}
+
+// Check all required args present
+if ( !program.username || !program.wordlist || !program.target) {
+  console.log('\n  Ensure all required arguments are provided');
   program.help();
 }
 
@@ -38,3 +40,19 @@ if (program.type && program.config) {
   console.log('\n  Selecting a custom config file will overwrite the target framework choice');
   program.help();
 }
+
+// Require either a framework choice or config file
+if (!program.type && !program.config) {
+  console.log('\n  Select either a supported framework or provide a config file');
+  program.help();
+}
+
+// =====================================================================
+//  MAIN ===============================================================
+// =====================================================================
+
+console.log('[+] Starting bruteforce...')
+// parse config file
+
+// bruteforce.start(config);
+
