@@ -8,6 +8,7 @@ var Config  = require('./src/config.js');
 // Define option switches
 program
   .version('1.0.0')
+  .usage('-u <username> -w <wordlist> -t <target> [options]')
   .description('NodeJS HTTP(S) Login Form Bruteforcer')
   .option('-u, --username <string>', 'login username')
   .option('-w, --wordlist <file>', 'dictionary file')
@@ -25,7 +26,11 @@ program.on('--help', function() {
   );
   console.log(
     '    $ ./run.js -u admin@rails.com -w words.txt -N 35 ' + 
-    '-t http://localhost:3000/users/sign_in -N 50 -T rails\n'
+    '-t http://localhost:3000/users/sign_in -T rails'
+  );
+  console.log(
+    '    $ ./run.js -u root -w words.txt' + 
+    '-t http://dvwa/login -c config/dvwa.json\n'
   );
 });
 
