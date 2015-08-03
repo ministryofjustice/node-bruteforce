@@ -1,8 +1,9 @@
 #! /usr/bin/env node
 
 // Module Dependencies
-var program    = require('commander');
-// var bruteforce = require('./src/bruteforce.js');
+var program = require('commander');
+// var Attack  = require('./src/attack.js');
+var Config  = require('./src/config.js');
 
 // Define option switches
 program
@@ -13,46 +14,68 @@ program
   .option('-t, --target <url>', 'target sign in url')
   .option('-N, --num-requests [n]', 'maximum concurrent requests (default 25)', 25)
   .option('-T, --type [framework]', 'specify target framework', /^(rails|django)$/i, false)
-  .option('-c, --config [file]', 'custom .json config file')
+  .option('-c, --config [file]', 'custom .json config file');
 
 // Add examples to help menu
 program.on('--help', function() {
   console.log('  Examples:\n');
-  console.log('    $ ./run.js -u root -w words.txt -t http://localhost:8000/admin/login -N 50 -T django');
-  console.log('    $ ./run.js -u admin@rails.com -w words.txt -t http://localhost:3000/users/sign_in -N 50 -T rails\n');
+  console.log(
+    '    $ ./run.js -u root -w words.txt -N 50' + 
+    '-t http://localhost:8000/admin/login -T django'
+  );
+  console.log(
+    '    $ ./run.js -u admin@rails.com -w words.txt -N 35 ' + 
+    '-t http://localhost:3000/users/sign_in -N 50 -T rails\n'
+  );
 });
 
 program.parse(process.argv);
 
-// Display help if no arguments passed
-if (!process.argv.slice(2).length) {
-  program.help();
+function validate(condition, message) {
+  if (condition) {
+    message && console.log(message);
+    program.help();
+  }
 }
+
+// Display help if no arguments passed
+validate(!process.argv.slice(2).length);
 
 // Check all required args present
-if ( !program.username || !program.wordlist || !program.target) {
-  console.log('\n  Ensure all required arguments are provided');
-  program.help();
-}
+validate(
+  !(program.username || program.wordlist || program.target),
+  '\n  Ensure all required arguments are provided (user, wordlist, url)'
+);
 
 // Don't allow a framework choice and a custom config file
-if (program.type && program.config) {
-  console.log('\n  Selecting a custom config file will overwrite the target framework choice');
-  program.help();
-}
+validate(
+  (program.type && program.config),
+  '\n  Selecting a custom config file will overwrite the target framework choice'
+);
 
 // Require either a framework choice or config file
-if (!program.type && !program.config) {
-  console.log('\n  Select either a supported framework or provide a config file');
-  program.help();
-}
+validate(
+  (!program.type && !program.config),
+  '\n  Select either a supported framework or provide a config file'
+)
 
 // =====================================================================
 //  MAIN ===============================================================
 // =====================================================================
 
-console.log('[+] Starting bruteforce...')
-// parse config file
+var options = {
+  username: program.username,
+  wordlist: program.wordlist,
+  target: program.target,
+  concurrency: program.numRequests,
+  configFile: program.config // pass a function?
+};
 
-// bruteforce.start(config);
+console.log('[+] Parsing configuration');
+var config = new Config(options);
+
+console.log('[+] Starting bruteforce...');
+// var attack = new Attack(config);
+
+// attack.launch;
 

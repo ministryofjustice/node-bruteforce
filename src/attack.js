@@ -5,7 +5,11 @@ var es      = require('event-stream');
 var async   = require('async');
 var request = require('request');
 
-function start(config) {
+function Attack(config) {
+  
+}
+
+function launch(config) {
   var queue = async.queue(tryLogin, config.numRequests);
 
   queue.drain = function() {
@@ -28,7 +32,7 @@ function start(config) {
     );
 }
 
-exports.start = start;
+module.exports = Attack;
 
 // ================================================================================================
 // ================================================================================================

@@ -7,22 +7,22 @@
     ]
   },
   "csrfRequest": {
-    "url": "^URL^",
+    "url": "%URL%",
     "method": "GET",
     "headers": {},
     "rejectUnauthorized": false
   },
   "loginRequest": {
-    "path": "^URL^",
+    "path": "%URL%",
     "method": "POST",
     "headers": {
-      "Referer": "^URL^",
-      "Cookie": "csrftoken=^TOKEN^"
+      "Referer": "%URL%",
+      "Cookie": "csrftoken=%TOKEN%"
     },
     "form": {
-      "csrfmiddlewaretoken": "^TOKEN^",
-      "username": "^USER^",
-      "password": "^PASS^",
+      "csrfmiddlewaretoken": "%TOKEN%",
+      "username": "%USER%",
+      "password": "%PASS%",
       "next": "/admin/"
     },
     "rejectUnauthorized": false

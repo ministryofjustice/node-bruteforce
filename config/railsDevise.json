@@ -6,21 +6,21 @@
     ]
   },
   "csrfRequest": {
-    "url": "^URL^",
+    "url": "%URL%",
     "method": "GET",
     "headers": {},
     "rejectUnauthorized": false
   },
   "loginRequest": {
-    "path": "^URL^",
+    "path": "%URL%",
     "method": "POST",
     "headers": {
-      "Cookie": "^COOKIE^"
+      "Cookie": "%COOKIE%"
     },
     "form": {
-      "authenticity_token": "^TOKEN^",
-      "user[email]": "^USER^",
-      "user[password]": "^PASS^",
+      "authenticity_token": "%TOKEN%",
+      "user[email]": "%USER%",
+      "user[password]": "%PASS%",
       "commit": "Sign+in"
     },
     "rejectUnauthorized": false
