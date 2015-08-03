@@ -8,7 +8,9 @@ function Config(options) {
   raw = gsub(raw, this.ANCHORS.user, options.username);
   raw = gsub(raw, this.ANCHORS.url, options.target);
 
-  this.raw = raw;  
+  this.rawAdvanced = raw;
+  this.wordlist    = options.wordlist;
+  this.concurrency = options.concurrency;  
 }
 
 Config.prototype.ANCHORS = {
@@ -19,20 +21,18 @@ Config.prototype.ANCHORS = {
   cookie: '%COOKIE%'
 };
 
-Config.prototype.generate = function() {
-  return JSON.parse(this.raw);
+Config.prototype.getAdvanced = function() {
+  return JSON.parse(this.rawAdvanced);
 };
 
-Config.prototype.setPassword = function(password) {
-  this.raw = gsub(raw, this.ANCHORS.pass, password);
-};
+Config.prototype.getLogin = function(password, token, cookie) {
+  var raw = this.rawAdvanced
 
-Config.prototype.setCookie = function(cookie) {
-  this.raw = gsub(raw, this.ANCHORS.cookie, cookie);
-};
+  raw = gsub(raw, this.ANCHORS.pass, password);
+  raw = gsub(raw, this.ANCHORS.token, token);
+  raw = gsub(raw, this.ANCHORS.cookie, cookie);
 
-Config.prototype.setToken = function(token) {
-  this.raw = gsub(raw, this.ANCHORS.token, token);
+  return JSON.parse(raw).login;
 };
 
 module.exports = Config;

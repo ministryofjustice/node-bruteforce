@@ -1,4 +1,3 @@
-word
 bird
 thebirdis
 123456789

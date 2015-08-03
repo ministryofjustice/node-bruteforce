@@ -2,7 +2,7 @@
 
 // Module Dependencies
 var program = require('commander');
-// var Attack  = require('./src/attack.js');
+var attack  = require('./src/attack.js');
 var Config  = require('./src/config.js');
 
 // Define option switches
@@ -32,31 +32,31 @@ program.on('--help', function() {
 program.parse(process.argv);
 
 function validate(condition, message) {
-  if (condition) {
-    message && console.log(message);
+  if (!condition) {
+    message && console.log('\n  ' + message);
     program.help();
   }
 }
 
 // Display help if no arguments passed
-validate(!process.argv.slice(2).length);
+validate(process.argv.slice(2).length);
 
 // Check all required args present
 validate(
-  !(program.username || program.wordlist || program.target),
-  '\n  Ensure all required arguments are provided (user, wordlist, url)'
+  (program.username || program.wordlist || program.target),
+  'Ensure all required arguments are provided (user, wordlist, url)'
 );
 
 // Don't allow a framework choice and a custom config file
 validate(
-  (program.type && program.config),
-  '\n  Selecting a custom config file will overwrite the target framework choice'
+  !(program.type && program.config),
+  'Selecting a custom config file will overwrite the target framework choice'
 );
 
 // Require either a framework choice or config file
 validate(
-  (!program.type && !program.config),
-  '\n  Select either a supported framework or provide a config file'
+  (program.type || program.config),
+  'Select either a supported framework or provide a config file'
 )
 
 // =====================================================================
@@ -64,18 +64,16 @@ validate(
 // =====================================================================
 
 var options = {
-  username: program.username,
-  wordlist: program.wordlist,
-  target: program.target,
+  username:    program.username,
+  wordlist:    program.wordlist,
+  target:      program.target,
   concurrency: program.numRequests,
-  configFile: program.config // pass a function?
+  configFile:  program.config // pass a function?
 };
 
 console.log('[+] Parsing configuration');
 var config = new Config(options);
 
 console.log('[+] Starting bruteforce...');
-// var attack = new Attack(config);
-
-// attack.launch;
+attack.launch(config);
 
