@@ -37,7 +37,7 @@ function run(cliArgs) {
 
   function validate(condition, message) {
     if (!condition) {
-      message && console.log('\n  ' + message);
+      if (message) console.log('\n  ' + message);
       program.help();
     }
   }
