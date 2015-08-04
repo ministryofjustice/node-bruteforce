@@ -12,6 +12,7 @@ Please use responsibly!
   $ git clone git@github.com:foxjerem/node-bruteforce.git
   $ cd node-bruteforce
   $ chmod 755 run.js
+  $ npm install -g
   $ node-bruteforce
 ```
 
@@ -36,7 +37,7 @@ Please use responsibly!
 
   Examples:
 
-    $ ./run.js -u root -w words.txt -N 50-t http://localhost:8000/admin/login -T django
+    $ ./run.js -u root -w words.txt -N 50-t http://localhost:8000/admin -T django
     $ ./run.js -u admin@rails.com -w words.txt -N 35 -t http://localhost:3000/users/sign_in -T rails
     $ ./run.js -u root -w words.txt-t http://dvwa/login -c config/dvwa.json
 
