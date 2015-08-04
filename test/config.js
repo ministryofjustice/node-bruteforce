@@ -1,6 +1,5 @@
 var path   = require('path');
 var expect = require('expect.js');
-var sinon  = require('sinon');
 var Config = require('../src/config.js');
 
 describe('Config', function() {
