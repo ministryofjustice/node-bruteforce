@@ -73,7 +73,8 @@ var options = {
   wordlist:    program.wordlist,
   target:      program.target,
   concurrency: program.numRequests,
-  configFile:  program.config // pass a function?
+  configFile:  program.config,
+  type:        program.type
 };
 
 console.log('[+] Parsing configuration');

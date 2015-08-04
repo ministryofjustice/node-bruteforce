@@ -1,16 +1,18 @@
-var fs = require('fs');
+var fs   = require('fs');
+var path = require('path');
 //
 // Build an attack configuration from an options object
 //
 function Config(options) {
-  var raw = fs.readFileSync(options.configFile, 'utf-8');
+  var path = this.getSource(options.type, options.configFile);
+  var raw  = fs.readFileSync(path, 'utf-8');
 
   raw = gsub(raw, this.ANCHORS.user, options.username);
   raw = gsub(raw, this.ANCHORS.url, options.target);
 
   this.rawAdvanced = raw;
   this.wordlist    = options.wordlist;
-  this.concurrency = options.concurrency;  
+  this.concurrency = options.concurrency; 
 }
 
 Config.prototype.ANCHORS = {
@@ -19,6 +21,21 @@ Config.prototype.ANCHORS = {
   url:    '%URL%',
   token:  '%TOKEN%',
   cookie: '%COOKIE%'
+};
+
+Config.prototype.FRAMEWORKS = {
+  rails:  'railsDevise.json',
+  django: 'djangoAdmin.json'
+};
+
+Config.prototype.CONFIG_PATH = 'config/frameworks';
+
+Config.prototype.getSource = function(type, file) {
+  if (file) {
+    return file;
+  } else {
+    return path.join(this.CONFIG_PATH, this.FRAMEWORKS[type]);
+  }
 };
 
 Config.prototype.getAdvanced = function() {
