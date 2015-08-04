@@ -18,7 +18,7 @@
     "form": {
       "authenticity_token": "%TOKEN%",
       "user": "%USER%",
-      "password": "%PASS%",
+      "password": "%PASS%"
     },
     "rejectUnauthorized": false
   }
