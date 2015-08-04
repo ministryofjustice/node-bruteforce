@@ -1,0 +1,25 @@
+{
+  "capture": {
+    "csrfRegex": "",
+    "loginRegex": []
+  },
+  "csrf": {
+    "url": "%URL%",
+    "method": "GET",
+    "headers": {},
+    "rejectUnauthorized": false
+  },
+  "login": {
+    "url": "%URL%",
+    "method": "POST",
+    "headers": {
+      "Cookie": "%COOKIE%"
+    },
+    "form": {
+      "authenticity_token": "%TOKEN%",
+      "user": "%USER%",
+      "password": "%PASS%",
+    },
+    "rejectUnauthorized": false
+  }
+}

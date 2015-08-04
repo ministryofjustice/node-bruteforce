@@ -1,6 +1,5 @@
 // Module Dependencies
 var fs      = require('fs');
-var stream  = require('stream');
 var es      = require('event-stream');
 var async   = require('async');
 var request = require('request');
