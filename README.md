@@ -43,4 +43,8 @@ Please use responsibly!
 
 ```
 
+### Custom Configuration
+
+Rails Devise and Django Admin default login screens are supported by default through the -T flag. In case some settings have been modified or for applications with a similar set up, users can create a custom config file to use through the -c flag. See the [template](https://github.com/foxjerem/node-bruteforce/blob/master/config/custom/template.json) for a skeleton config to get started.
+
 
