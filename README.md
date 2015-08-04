@@ -51,6 +51,6 @@ Rails Devise and Django Admin default login screens are supported by default thr
 
 A number of dependable wordlists can be found here:
 
-[Linkedin 2012](http://www.adeptus-mechanicus.com/codex/hashpass/hashpass.php)
-[Rockyou](https://wiki.skullsecurity.org/Passwords)
++ [Linkedin 2012](http://www.adeptus-mechanicus.com/codex/hashpass/hashpass.php)
++ [RockYou](https://wiki.skullsecurity.org/Passwords)
 
