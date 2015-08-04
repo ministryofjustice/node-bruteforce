@@ -1,9 +1,9 @@
 #! /usr/bin/env node
 
 // Module Dependencies
-var program = require('commander');
-var attack  = require('./src/attack.js');
-var Config  = require('./src/config.js');
+var program       = require('commander');
+var attack        = require('./src/attack.js');
+var configBuilder = require('./src/configBuilder.js');
 
 // Define option switches
 program
@@ -68,7 +68,7 @@ validate(
 //  MAIN ===============================================================
 // =====================================================================
 
-var options = {
+var opt = {
   username:    program.username,
   wordlist:    program.wordlist,
   target:      program.target,
@@ -78,7 +78,7 @@ var options = {
 };
 
 console.log('[+] Parsing configuration');
-var config = new Config(options);
+var config = configBuilder.fromOptions(opt);
 
 console.log('[+] Starting bruteforce...');
 attack.launch(config);

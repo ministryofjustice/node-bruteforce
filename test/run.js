@@ -1,20 +1,23 @@
-var expect = require('expect.js');
-var sinon  = require('sinon');
-var attack = require('../src/attack.js');
-var Config  = require('../src/config.js');
+var expect        = require('expect.js');
+var sinon         = require('sinon');
+var attack        = require('../src/attack.js');
+var configBuilder = require('../src/configBuilder.js');
 
-describe('Command line interface', function() {
-  beforeEach(function() {
-    sinon.stub(attack, 'launch');
+describe('Command line interface', sinon.test(function() {
+  var config    = { 'option': 'value' };
+  var configSpy = this.stub(configBuilder, 'fromOptions').returns(config);
+  var attackSpy = this.spy(attack, 'launch');
+
+  afterEach(function() {
+    configSpy.restore();
+    attackSpy.restore();
   });
 
   describe('usage', function() {
-    var spy = sinon.spy(process, 'Config');
-
     it('should launch an attack with the supplied paramters', function() {
       process.exec('node-bruteforce -u root -w words.txt -t http://dvwa.org -N 35 -T rails');
 
-      expect(spy).to.have.been.calledWith({
+      expect(configSpy).to.have.been.calledWith({
         username:    'root',
         wordlist:    'words.txt',
         target:      'http://dvwa.org',
@@ -22,7 +25,7 @@ describe('Command line interface', function() {
         configFile:  undefined,
         type:        'rails'
       });
-      expect(attack.launch).to.have.been.calledWith(config);
+      expect(attackSpy).to.have.been.calledWith(config);
     });
 
     it('should display the help menu if no commands are passed', function() {
@@ -43,4 +46,4 @@ describe('Command line interface', function() {
 
     });
   });
-});
+}));

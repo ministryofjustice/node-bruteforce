@@ -1,13 +1,13 @@
-var path   = require('path');
-var expect = require('expect.js');
-var Config = require('../src/config.js');
+var path          = require('path');
+var expect        = require('expect.js');
+var configBuilder = require('../src/configBuilder.js');
 
 describe('Config', function() {
   var options;
   var config;
 
   beforeEach(function() {
-    options = {
+    opt = {
       username:    'root',
       wordlist:    'words.txt',
       target:      'http://dvwa.org',
@@ -15,16 +15,16 @@ describe('Config', function() {
       configFile:  'test/resources/sampleConfig.json'
     };
 
-    config = new Config(options);
+    config = configBuilder.fromOptions(opt);
   });
 
   describe('#new', function() {
     it('should set the wordlist', function() {
-      expect(config.wordlist).to.eql(options.wordlist);
+      expect(config.wordlist).to.eql(opt.wordlist);
     });
 
     it('should set the concurrency', function() {
-      expect(config.concurrency).to.eql(options.concurrency);
+      expect(config.concurrency).to.eql(opt.concurrency);
     });
 
     it('should updated raw config with known parameters', function() {
@@ -35,15 +35,15 @@ describe('Config', function() {
 
   describe('#getSource', function() {
     it('should return the config file if one is set', function() {
-      expect(config.getSource('', options.configFile)).to.eql(options.configFile);
+      expect(config.getSource('', opt.configFile)).to.eql(opt.configFile);
     });
 
     it('should return the appropriate framework path if one is selected', function() {
-      var railsOptions  = options;
-      railsOptions.type = 'rails';
-      delete railsOptions.configFile;
+      var railsOpt  = opt;
+      railsOpt.type = 'rails';
+      delete railsOpt.configFile;
 
-      var railsConfig = new Config(railsOptions);
+      var railsConfig = configBuilder.fromOptions(railsOpt);
 
       expect(railsConfig.getSource('rails')).to.eql(
         path.join(
@@ -56,8 +56,8 @@ describe('Config', function() {
 
   describe('#getAdvanced', function() {
     it('should return a config JSON object', function() {
-      expect(config.getAdvanced().csrf.url).to.eql(options.target);
-      expect(config.getAdvanced().login.url).to.eql(options.target);
+      expect(config.getAdvanced().csrf.url).to.eql(opt.target);
+      expect(config.getAdvanced().login.url).to.eql(opt.target);
     });
   });
 

@@ -1,19 +1,33 @@
 var fs   = require('fs');
 var path = require('path');
-//
+
+// ================================================================================================
 // Build an attack configuration from an options object
-//
-function Config(options) {
-  var path = this.getSource(options.type, options.configFile);
+// ================================================================================================
+
+function fromOptions(options) {
+  var config = new Config();
+
+  var path = config.getSource(options.type, options.configFile);
   var raw  = fs.readFileSync(path, 'utf-8');
 
-  raw = gsub(raw, this.ANCHORS.user, options.username);
-  raw = gsub(raw, this.ANCHORS.url, options.target);
+  raw = gsub(raw, config.ANCHORS.user, options.username);
+  raw = gsub(raw, config.ANCHORS.url, options.target);
 
-  this.rawAdvanced = raw;
-  this.wordlist    = options.wordlist;
-  this.concurrency = options.concurrency; 
+  config.rawAdvanced = raw;
+  config.wordlist    = options.wordlist;
+  config.concurrency = options.concurrency; 
+
+  return config;
 }
+
+exports.fromOptions = fromOptions;
+
+// ================================================================================================
+// Config object and method definition
+// ================================================================================================
+
+function Config() {}
 
 Config.prototype.ANCHORS = {
   user:   '%USER%',
@@ -52,9 +66,8 @@ Config.prototype.getLogin = function(password, token, cookie) {
   return JSON.parse(raw).login;
 };
 
-module.exports = Config;
-
 // ================================================================================================
+// Helpers
 // ================================================================================================
 
 function gsub(sTarget, sFind, sReplace) {
