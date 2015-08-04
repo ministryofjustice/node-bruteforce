@@ -41,7 +41,7 @@ function launch(config) {
     request(reqConfig.csrf, function (error, response, body) {
 
       if (!error && response.statusCode === 200) {
-        var cookieString = response.headers['set-cookie'][0];
+        var cookieString = response.headers['set-cookie'];
         var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
 
         if (!capture) {
