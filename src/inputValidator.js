@@ -18,7 +18,7 @@ function checkAll(program) {
 
   // Check all required args present
   check(
-    (program.username || program.wordlist || program.target),
+    (program.username && program.wordlist && program.target),
     'Ensure all required arguments are provided (user, wordlist, url)'
   );
 

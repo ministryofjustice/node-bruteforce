@@ -1,6 +1,6 @@
 var attack         = require('./attack.js');
 var configBuilder  = require('./configBuilder.js');
-var validator      = require('./validator.js');
+var inputValidator = require('./inputValidator.js');
 var programBuilder = require('./programBuilder.js');
 var logger         = require('./logger.js');
 
@@ -14,7 +14,7 @@ function run(cliArgs) {
   var program = programBuilder.fromArgs(cliArgs);
 
   // Check all options passed make sense
-  validator.checkAll(program);
+  inputValidator.checkAll(program);
 
   // Create the configuration
   var opt = {
