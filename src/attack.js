@@ -57,10 +57,10 @@ function launch(config) {
   // Process server response to a login attemot
   function processLoginResponse(response, body, password) {
     
-    // If we match known regex password is incorrect
-    var loginFailure = new RegExp(config.getAdvanced().capture.loginRegex);
+    // If we match known regex (can be multiple) password is incorrect
+    var loginFailures = config.getAdvanced().capture.loginRegex;
 
-    if (response.statusCode === 200 && body.match(loginFailure)) { //replace this with a function to macth each regex passed
+    if (response.statusCode === 200 && matchAny(loginFailures, body)) { 
       
       console.log('[-] Invalid: ' + password);
 
@@ -72,7 +72,7 @@ function launch(config) {
     } else {
       
       console.log('[-] Server responded with: ' + response.statusCode);
-    
+
     }
   }
 
@@ -81,7 +81,7 @@ function launch(config) {
 
     getCSRF(function(token, cookieString) {
       var opt = config.getLogin(password, token, cookieString);
-      
+
       // Send a login POST
       request(opt, function (error, response, body) {
         
@@ -98,3 +98,21 @@ function launch(config) {
 }
 
 exports.launch = launch;
+
+// ================================================================================================
+// ================================================================================================
+
+function matchAny(arrPatterns, sTarget) {
+  for (var i = 0; i < arrPatterns.length; i++) {
+    
+    var re    = new RegExp(arrPatterns[i]);
+    var match = sTarget.match(re);
+
+    if (match) {
+      return match;
+    }
+  }
+
+  return null;
+
+}

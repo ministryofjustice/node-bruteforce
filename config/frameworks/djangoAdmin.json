@@ -1,6 +1,6 @@
 {
   "capture": {
-    "csrfRegex": "<input type='hidden' name='csrfmiddlewaretoken' value='(.*)' \/>",
+    "csrfRegex": "<input type='hidden' name='csrfmiddlewaretoken' value='(.*)'",
     "loginRegex": [
       "Please enter the correct username",
       "Please correct the error below"
@@ -9,11 +9,10 @@
   "csrf": {
     "url": "%URL%",
     "method": "GET",
-    "headers": {},
-    "rejectUnauthorized": false
+    "headers": {}
   },
   "login": {
-    "url": "%URL%",
+    "url": "%URL%/login/",
     "method": "POST",
     "headers": {
       "Referer": "%URL%",
@@ -24,7 +23,6 @@
       "username": "%USER%",
       "password": "%PASS%",
       "next": "/admin/"
-    },
-    "rejectUnauthorized": false
+    }
   }
 }

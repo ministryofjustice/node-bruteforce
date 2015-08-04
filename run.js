@@ -72,7 +72,7 @@ var options = {
   username:    program.username,
   wordlist:    program.wordlist,
   target:      program.target,
-  concurrency: program.numRequests,
+  concurrency: parseInt(program.numRequests),
   configFile:  program.config,
   type:        program.type
 };
