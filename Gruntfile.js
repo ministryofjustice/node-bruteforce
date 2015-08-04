@@ -6,6 +6,11 @@ module.exports = function(grunt) {
     jshint: {
       files: [ 'Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
     },
+    env : {
+      dev : {
+        NODE_ENV : grunt.option('environment') || 'test',
+      }
+    },
     watch: {
       scripts: {
         files: ['<%= jshint.files %>'],
@@ -30,9 +35,10 @@ module.exports = function(grunt) {
   // Plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks("grunt-mocha-test");
+  grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-env');
 
   // Register Tasks
-  grunt.registerTask('default', ['jshint', 'mochaTest']);
-  grunt.registerTask('test', ['mochaTest']);
+  grunt.registerTask('default', ['env', 'jshint', 'mochaTest']);
+  grunt.registerTask('test', ['env', 'mochaTest']);
 };

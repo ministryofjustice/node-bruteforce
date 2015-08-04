@@ -1,3 +1,5 @@
+var logger = require('./logger.js');
+
 // ================================================================================================
 // Validate options passed to program via interface
 // ================================================================================================
@@ -6,7 +8,7 @@ function checkAll(program) {
 
   function check(condition, message) {
     if (!condition) {
-      if (message) console.log('\n  ' + message);
+      if (message) logger.error(message);
       program.help();
     }
   }

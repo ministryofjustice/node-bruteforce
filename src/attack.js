@@ -2,6 +2,7 @@ var fs      = require('fs');
 var es      = require('event-stream');
 var async   = require('async');
 var request = require('request');
+var logger  = require('./logger.js');
 
 // ================================================================================================
 // Public API
@@ -11,17 +12,17 @@ function launch(config) {
   var queue = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
-    console.log('[+] Finished');
+    logger.info('Finished');
   };
 
-  console.log('[+] Reading wordlist...');
+  logger.info('Reading wordlist...');
 
   fs.createReadStream(config.wordlist)
     .on('error', function() {
-      console.log('[-] Error reading file');
+      logger.error('Error reading file');
     })
     .on('end', function() {
-      console.log('[+] Full wordlist read');
+      logger.info('Full wordlist read');
     })
     .pipe(es.split())
     .pipe(es.map(function(word) {
@@ -44,13 +45,13 @@ function launch(config) {
         var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
 
         if (!capture) {
-          console.log('[-] CSRF token not found\n[-] Debug info:\n');
+          logger.error('CSRF token not found\n[-] Debug info:\n');
           process.exit(1);
         }
 
         callback(capture[1], cookieString);
       } else {
-        console.error(error.toString());
+        logger.error(error.toString());
         process.exit(1);
       }
     });
@@ -64,16 +65,16 @@ function launch(config) {
 
     if (response.statusCode === 200 && matchAny(loginFailures, body)) { 
 
-      console.log('[-] Invalid: ' + password);
+      logger.info('Invalid: ' + password);
 
     } else if (response.statusCode < 400) {
 
-      console.log('[+] FOUND: ' + password  + '\n[+] Shutting down....');
+      logger.info('FOUND: ' + password  + '\n[+] Shutting down....');
       process.exit(1);
     
     } else {
       
-      console.log('[-] Server responded with: ' + response.statusCode);
+      logger.warn('Server responded with: ' + response.statusCode);
 
     }
   }
@@ -90,7 +91,7 @@ function launch(config) {
         if (!error) { 
           processLoginResponse(response, body, password);
         } else {
-          console.error(error.toString());
+          logger.error(error.toString());
         }
         
         callback();

@@ -2,6 +2,7 @@ var attack         = require('./attack.js');
 var configBuilder  = require('./configBuilder.js');
 var validator      = require('./validator.js');
 var programBuilder = require('./programBuilder.js');
+var logger         = require('./logger.js');
 
 // ================================================================================================
 //  Main
@@ -25,11 +26,11 @@ function run(cliArgs) {
     type:        program.type
   };
 
-  console.log('[+] Parsing configuration');
+  logger.info('Parsing configuration');
   var config = configBuilder.fromOptions(opt);
 
   // Launch the attack
-  console.log('[+] Starting bruteforce...');
+  logger.info('Starting bruteforce...');
   attack.launch(config);
 }
 
