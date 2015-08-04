@@ -61,7 +61,7 @@ function launch(config) {
     var loginFailures = config.getAdvanced().capture.loginRegex;
 
     if (response.statusCode === 200 && matchAny(loginFailures, body)) { 
-      
+
       console.log('[-] Invalid: ' + password);
 
     } else if (response.statusCode < 400) {
@@ -91,7 +91,7 @@ function launch(config) {
           console.error(error.toString());
         }
         
-        callback && callback();
+        callback();
       });
     });
   }
