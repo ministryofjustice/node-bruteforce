@@ -1,10 +1,12 @@
-// Module Dependencies
 var fs      = require('fs');
 var es      = require('event-stream');
 var async   = require('async');
 var request = require('request');
 
-// Launch an attack
+// ================================================================================================
+// Public API
+// ================================================================================================
+
 function launch(config) {
   var queue = async.queue(tryLogin, config.concurrency);
 
@@ -28,6 +30,7 @@ function launch(config) {
     );
 
   // ==============================================================================================
+  // Private 
   // ==============================================================================================
 
   // Extract CSRF token
@@ -99,6 +102,7 @@ function launch(config) {
 exports.launch = launch;
 
 // ================================================================================================
+// Helpers
 // ================================================================================================
 
 function matchAny(arrPatterns, sTarget) {
