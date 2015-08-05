@@ -8,7 +8,7 @@ var logger  = require('./logger.js');
 // Public API
 // ================================================================================================
 
-function launch(config, onSuccess, onError) {
+function launch(config, onSuccess, onFail) {
   var queue = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
@@ -45,15 +45,16 @@ function launch(config, onSuccess, onError) {
         var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
 
         if (!capture) {
-          logger.error('CSRF token not found\nDebug info:\n');
-          logger.data(body);
-          process.exit(1);
+          logger.error('CSRF token not found');
+          logger.info('Debug info:\n');
+          logger.info(body);
+          onFail();
         }
 
         callback(capture[1], cookieString);
       } else {
-        logger.error(error.toString());
-        process.exit(1);
+        logger.warn('Server responded with: ' + response.statusCode);
+        onFail();
       }
     });
   }
@@ -70,14 +71,14 @@ function launch(config, onSuccess, onError) {
 
     } else if (response.statusCode < 400) {
 
-      logger.info('FOUND: ' + password  + '\nShutting down....');
+      logger.info('FOUND: ' + password);
+      logger.info('Shutting down....');
       onSuccess(password);
-      process.exit(1);
-    
+
     } else {
       
       logger.warn('Server responded with: ' + response.statusCode);
-
+      onFail();
     }
   }
 

@@ -74,6 +74,12 @@ var RequestHandler = (function() {
     res.end();
   };
 
+  module.noCsrf = function(req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.write('[-] No token here');
+    res.end();
+  };
+
   module.login = function(req, res) {
     var postData = '';
 
@@ -116,8 +122,9 @@ console.log('[+] Starting mini web application on port ' + PORT);
 
 var handle = {};
 
-handle['/csrf']  = RequestHandler.csrf;
-handle['/login'] = RequestHandler.login;
-handle['404']    = RequestHandler.notFound;
+handle['/csrf']              = RequestHandler.csrf;
+handle['/non-existent/csrf'] = RequestHandler.noCsrf;
+handle['/login']             = RequestHandler.login;
+handle['404']                = RequestHandler.notFound;
 
 httpServer.start(Router.route, handle);

@@ -31,7 +31,11 @@ function run(cliArgs) {
 
   // Launch the attack
   logger.info('Starting bruteforce...');
-  attack.launch(config);
+  attack.launch(
+    config,
+    process.exit,
+    process.exit
+  );
 }
 
 exports.run = run;
