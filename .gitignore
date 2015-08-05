@@ -2,3 +2,4 @@ node_modules/
 rockyou*
 words.txt
 log/*.log
+coverage.html
