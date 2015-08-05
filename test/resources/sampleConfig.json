@@ -2,7 +2,7 @@
   "capture": {
     "csrfRegex": "token=(.*)",
     "loginRegex": [
-      "bad login"
+      "Bad login"
     ]
   },
   "csrf": {

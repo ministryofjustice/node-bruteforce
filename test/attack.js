@@ -6,8 +6,6 @@ var configBuilder = require('../src/configBuilder.js');
 var logger        = require('../src/logger.js');
 
 describe('Attack', function() {
-  var msgSpy = sinon.spy(logger, 'info');
-  // var errSpy = sinon.spy(logger, 'error');
   var config = configBuilder.fromOptions({
     username: 'root',
     wordlist: 'test/resources/words.txt',
@@ -15,14 +13,19 @@ describe('Attack', function() {
     concurrency: 1,
     configFile: 'test/resources/sampleConfig.json'
   });
+  var msgSpy;
+  var errSpy;
 
   beforeEach(function() {
+    msgSpy = sinon.spy(logger, 'info');
+    errSpy = sinon.spy(logger, 'error');
     sinon.stub(process, 'exit');
   });
   
   afterEach(function() {
     process.exit.restore();
-    msgSpy.reset();
+    msgSpy.restore();
+    errSpy.restore();
   });
 
   describe('#launch', function() {
@@ -33,16 +36,22 @@ describe('Attack', function() {
       });
     });
 
-    it('should display an invalid password attempt', function() {
-
+    it('should display an invalid password attempt', function(done) {
+      attack.launch(config, function() {
+        sinon.assert.calledWithMatch(msgSpy, /invalid: notpassword/i);
+        done();
+      });
     });
 
     it('should display an error if a CSRF token is not found', function() {
-
+      attack.launch(config, function() {
+        sinon.assert.calledWithMatch(msgSpy, /invalid: notpassword/i);
+        done();
+      });
     });
 
     it('should display a warning if server responds with non-success code', function() {
-
+     
     });
   });
 });

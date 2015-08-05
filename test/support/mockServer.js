@@ -8,14 +8,15 @@
 //
 // ================================================================================================
 //
-var http   = require('http');
-var url    = require('url');
-var crypto = require('crypto');
+var http        = require('http');
+var url         = require('url');
+var querystring = require('querystring');
+var crypto      = require('crypto');
 //
 // Config
 //
 var USERNAME = 'root';
-var PASSWORD = 'secret';
+var PASSWORD = 'password';
 var PORT     = 9000;
 //
 // Server
@@ -74,10 +75,36 @@ var RequestHandler = (function() {
   };
 
   module.login = function(req, res) {
+    var postData = '';
+
+    req.on('data', function(data) {
+      postData += data;
+    });
+
+    req.on('end', function() {
+      var data = querystring.parse(postData);
+
+      if (data.user === USERNAME && data.password === PASSWORD) {
+        allowed(res);
+      } else {
+        denied(res);
+      }
+    });
+  };
+  //
+  // Private
+  //
+  function allowed(res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.write('Welcome legitimate user');
     res.end();
-  };
+  }
+
+  function denied(res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.write('Bad login');
+    res.end();
+  }
 
   return module;
 

@@ -8,7 +8,7 @@ var logger  = require('./logger.js');
 // Public API
 // ================================================================================================
 
-function launch(config, onSuccess) {
+function launch(config, onSuccess, onError) {
   var queue = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
