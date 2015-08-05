@@ -32,11 +32,19 @@ function run(cliArgs) {
 
   // Launch the attack
   logger.info('Starting bruteforce...');
+
+  function exitSuccess() {
+    process.exit(0);
+  }
+
+  function exitError() {
+    process.exit(1);
+  }
   
   attack.launch(
     config,
-    process.exit, /* action on success */
-    process.exit /* action on error */
+    exitSuccess,
+    exitError
   );
 }
 
