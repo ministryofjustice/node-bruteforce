@@ -69,7 +69,7 @@ var RequestHandler = (function() {
 
   module.csrf = function(req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.write('[+] token=' + crypto.randomBytes(8));
+    res.write('[+] token=' + crypto.randomBytes(8).toString('hex'));
     res.end();
   };
 

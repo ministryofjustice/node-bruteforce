@@ -4,7 +4,7 @@ var validator = require('../src/inputValidator.js');
 var logger    = require('../src/logger.js');
 
 describe('Input Validation', function() {
-  var msgSpy = sinon.spy(logger, 'error');
+  var msgSpy;
   var dblProgram;
 
   beforeEach(function() {
@@ -20,10 +20,12 @@ describe('Input Validation', function() {
       type: 'rails',
       help: sinon.spy()
     };
+
+    msgSpy = sinon.spy(logger, 'error');
   });
 
   afterEach(function() {
-    msgSpy.reset();
+    msgSpy.restore();
   });
 
   describe('#checkAll', function() {

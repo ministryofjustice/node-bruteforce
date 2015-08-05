@@ -5,7 +5,15 @@ var attack        = require('../src/attack.js');
 var configBuilder = require('../src/configBuilder.js');
 
 describe('Application', function() {
-  var attackStub = sinon.stub(attack, 'launch');
+  var attackStub;
+
+  beforeEach(function() {
+    attackStub = sinon.stub(attack, 'launch');
+  }); 
+
+  afterEach(function() {
+    attackStub.restore();
+  });
 
   describe('usage', function() {
     it('should launch an attack with the supplied paramters', function() {

@@ -8,7 +8,7 @@ var logger  = require('./logger.js');
 // Public API
 // ================================================================================================
 
-function launch(config) {
+function launch(config, onSuccess) {
   var queue = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
@@ -70,7 +70,8 @@ function launch(config) {
 
     } else if (response.statusCode < 400) {
 
-      logger.info('FOUND: ' + password  + '\n[+] Shutting down....');
+      logger.info('FOUND: ' + password  + '\nShutting down....');
+      onSuccess(password);
       process.exit(1);
     
     } else {

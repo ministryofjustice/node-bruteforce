@@ -38,7 +38,7 @@ module.exports = function(grunt) {
           quiet: false,
           clearRequireCache: false
         },
-        src: ['test/**/attack.js']
+        src: ['test/*.js']
       }
     }
   });

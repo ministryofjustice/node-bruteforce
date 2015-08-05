@@ -16,17 +16,21 @@ describe('Attack', function() {
     configFile: 'test/resources/sampleConfig.json'
   });
 
-  sinon.stub(process, 'exit');
-
+  beforeEach(function() {
+    sinon.stub(process, 'exit');
+  });
+  
   afterEach(function() {
+    process.exit.restore();
     msgSpy.reset();
   });
 
   describe('#launch', function() {
-    it('should display a found password', function() {
-      attack.launch(config);
-
-      sinon.assert.calledWithMatch(msgSpy, /found/i);
+    it('should display a found password', function(done) {
+      attack.launch(config, function() {
+        sinon.assert.calledWithMatch(msgSpy, /found/i);
+        done();
+      });
     });
 
     it('should display an invalid password attempt', function() {
