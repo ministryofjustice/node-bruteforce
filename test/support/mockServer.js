@@ -4,6 +4,7 @@
 //
 // Serves URLs: 
 //  -> http://localhost:9000/csrf 
+//  -> http://localhost:9000/non-existent/csrf
 //  -> http://localhost:9000/login
 //
 // ================================================================================================

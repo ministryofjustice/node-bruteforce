@@ -27,14 +27,16 @@ function run(cliArgs) {
   };
 
   logger.info('Parsing configuration');
+  
   var config = configBuilder.fromOptions(opt);
 
   // Launch the attack
   logger.info('Starting bruteforce...');
+  
   attack.launch(
     config,
-    process.exit,
-    process.exit
+    process.exit, /* action on success */
+    process.exit /* action on error */
   );
 }
 
