@@ -59,7 +59,7 @@ describe('Attack', function() {
       opt.target = 'http://localhost:9000/unknown';
       var badConfig = configBuilder.fromOptions(opt);
 
-      attack.launch(badConfig, undefined , function() {
+      attack.launch(badConfig, undefined, function() {
         sinon.assert.calledWithMatch(warnSpy, /server responded with: 404/i);
         done();
       });

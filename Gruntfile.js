@@ -36,7 +36,16 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec',
           quiet: false,
-          clearRequireCache: false
+          clearRequireCache: false,
+          require: 'coverage/blanket'
+        },
+        src: ['test/*.js']
+      },
+      coverage: {
+        options: {
+          reporter: 'html-cov',
+          quiet: true,
+          captureFile: 'coverage.html'
         },
         src: ['test/*.js']
       }
