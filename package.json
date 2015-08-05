@@ -30,7 +30,9 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-env": "^0.4.4",
     "grunt-mocha-test": "^0.12.7",
+    "grunt-run": "^0.3.0",
     "mocha": "^2.2.5",
+    "run": "^1.4.0",
     "sinon": "^1.15.4"
   }
 }

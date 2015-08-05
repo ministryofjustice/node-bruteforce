@@ -28,7 +28,7 @@ describe('Config', function() {
     });
 
     it('should updated raw config with known parameters', function() {
-      expect(config.rawAdvanced).to.match(/\"url\": \"http:\/\/dvwa\.org\"/);
+      expect(config.rawAdvanced).to.match(/\"url\": \"http:\/\/dvwa\.org\.*/);
       expect(config.rawAdvanced).to.match(/\"user\": \"root\"/);
     });
   });
@@ -56,8 +56,8 @@ describe('Config', function() {
 
   describe('#getAdvanced', function() {
     it('should return a config JSON object', function() {
-      expect(config.getAdvanced().csrf.url).to.eql(opt.target);
-      expect(config.getAdvanced().login.url).to.eql(opt.target);
+      expect(config.getAdvanced().csrf.url).to.match(new RegExp(opt.target));
+      expect(config.getAdvanced().login.url).to.match(new RegExp(opt.target));
     });
   });
 

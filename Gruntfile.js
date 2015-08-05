@@ -11,6 +11,17 @@ module.exports = function(grunt) {
         NODE_ENV : grunt.option('environment') || 'test',
       }
     },
+    run: {
+      mockServer: {
+        options: {
+          wait: false
+        },
+        // cmd: "node", // but that's the default 
+        args: [
+          'test/support/mockServer.js'
+        ]
+      }
+    },
     watch: {
       scripts: {
         files: ['<%= jshint.files %>'],
@@ -27,7 +38,7 @@ module.exports = function(grunt) {
           quiet: false,
           clearRequireCache: false
         },
-        src: ['test/**/*.js']
+        src: ['test/**/attack.js']
       }
     }
   });
@@ -37,8 +48,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-env');
+  grunt.loadNpmTasks('grunt-run');
 
   // Register Tasks
-  grunt.registerTask('default', ['env', 'jshint', 'mochaTest']);
-  grunt.registerTask('test', ['env', 'mochaTest']);
+  grunt.registerTask('default', ['env', 'run:mockServer', 'jshint', 'mochaTest']);
+  grunt.registerTask('test', ['env', 'run:mockServer', 'mochaTest']);
 };

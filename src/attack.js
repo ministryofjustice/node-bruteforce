@@ -45,7 +45,8 @@ function launch(config) {
         var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
 
         if (!capture) {
-          logger.error('CSRF token not found\n[-] Debug info:\n');
+          logger.error('CSRF token not found\nDebug info:\n');
+          logger.data(body);
           process.exit(1);
         }
 

@@ -1,16 +1,18 @@
 {
   "capture": {
-    "csrfRegex": "",
-    "loginRegex": []
+    "csrfRegex": "token=(.*)",
+    "loginRegex": [
+      "bad login"
+    ]
   },
   "csrf": {
-    "url": "%URL%",
+    "url": "%URL%/csrf",
     "method": "GET",
     "headers": {},
     "rejectUnauthorized": false
   },
   "login": {
-    "url": "%URL%",
+    "url": "%URL%/login",
     "method": "POST",
     "headers": {
       "Cookie": "%COOKIE%"
