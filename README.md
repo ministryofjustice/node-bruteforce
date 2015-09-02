@@ -75,3 +75,7 @@ Test runs are handled via grunt. A mini web application instance is spawned at t
 
 ```
 
+### To Do
+
+On failed request store CSRF token to a pool. When launching a new login attack check whether any tokens available in the pool. If yes use that one, otherwise go through the whole process...
+
