@@ -39,10 +39,10 @@ function launch(config, onSuccess, onFail) {
 
   // Get a CSRF token from the pool if available, otherwise request one
   function getCSRF(callback) {
-    var tokenData = tokenPool.pop();
+    var sample = tokenPool.pop();
 
-    if (tokenData) {
-      callback.apply(tokenData);
+    if (sample) {
+      callback(sample.token, sample.cookie);
     } else {
       requestCSRF(callback);
     }
@@ -70,14 +70,16 @@ function launch(config, onSuccess, onFail) {
   // Collect CSRF token from response body and save to token pool
   function collectCSRF(response, body, csrfRegex, callback) {
 
-    var cookieString = response.headers['set-cookie'];
+    var cookieString = response.headers['set-cookie'] || '';
     var capture      = body.match(new RegExp(csrfRegex));
 
     if (!capture) {
+
       logger.error('CSRF token not found');
       logger.info('Debug info:\n');
       logger.info(body);
       onFail();
+      
     }
 
     callback(capture[1], cookieString);
@@ -96,7 +98,10 @@ function launch(config, onSuccess, onFail) {
       logger.info('Invalid: ' + password);
       
       collectCSRF(response, body, csrfRegex, function(token, cookieString) {
-        tokenPool.push([token, cookieString]);
+        tokenPool.push({ 
+          token: token, 
+          cookie: cookieString 
+        });
       });
 
     } else if (response.statusCode < 400) {
