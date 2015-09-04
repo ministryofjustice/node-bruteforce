@@ -22,8 +22,8 @@ function fromArgs(args) {
   program.on('--help', function() {
     console.log('  Examples:\n');
     console.log(
-      '    $ ./run.js -u root -w words.txt -N 50' + 
-      '-t http://localhost:8000/admin/login -T django'
+      '    $ ./run.js -u root -w words.txt -N 50 ' + 
+      '-t http://localhost:8000/admin -T django'
     );
     console.log(
       '    $ ./run.js -u admin@rails.com -w words.txt -N 35 ' + 

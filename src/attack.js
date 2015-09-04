@@ -9,6 +9,7 @@ var logger  = require('./logger.js');
 // ================================================================================================
 
 function launch(config, onSuccess, onFail) {
+  var csrf  = require('./csrf.js')(config, onSuccess, onFail);
   var queue = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
@@ -34,40 +35,24 @@ function launch(config, onSuccess, onFail) {
   // Private 
   // ==============================================================================================
 
-  // Extract CSRF token
-  function getCSRF(callback) {
-    var reqConfig = config.getAdvanced();
-
-    request(reqConfig.csrf, function (error, response, body) {
-
-      if (!error && response.statusCode === 200) {
-        var cookieString = response.headers['set-cookie'];
-        var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
-
-        if (!capture) {
-          logger.error('CSRF token not found');
-          logger.info('Debug info:\n');
-          logger.info(body);
-          onFail();
-        }
-
-        callback(capture[1], cookieString);
-      } else {
-        logger.warn('Server responded with: ' + response.statusCode);
-        onFail();
-      }
-    });
-  }
-
-  // Process server response to a login attemot
+  // Process server response to a login attempt
   function processLoginResponse(response, body, password) {
     
     // If we match known regex (can be multiple) password is incorrect
-    var loginFailures = config.getAdvanced().capture.loginRegex;
+    var captureConfig = config.getAdvanced().capture;
+    var loginFailures = captureConfig.loginRegex;
+    var csrfRegex     = captureConfig.csrfRegex;
 
     if (response.statusCode === 200 && matchAny(loginFailures, body)) { 
 
       logger.info('Invalid: ' + password);
+      
+      csrf.collect(response, body, csrfRegex, function(token, cookieString) {
+        csrf.tokenPool.push({ 
+          token: token, 
+          cookie: cookieString 
+        });
+      });
 
     } else if (response.statusCode < 400) {
 
@@ -79,13 +64,14 @@ function launch(config, onSuccess, onFail) {
       
       logger.warn('Server responded with: ' + response.statusCode);
       onFail();
+
     }
   }
 
   // Attempt to login with given password
   function tryLogin(password, callback) {
 
-    getCSRF(function(token, cookieString) {
+    csrf.fetch(function(token, cookieString) {
       var opt = config.getLogin(password, token, cookieString);
 
       // Send a login POST

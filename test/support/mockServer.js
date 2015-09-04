@@ -19,6 +19,7 @@ var crypto      = require('crypto');
 var USERNAME = 'root';
 var PASSWORD = 'password';
 var PORT     = 9000;
+var TOKENS   = [];
 //
 // Server
 //
@@ -70,8 +71,10 @@ var RequestHandler = (function() {
   };
 
   module.csrf = function(req, res) {
+    var token = generateToken();
+
     res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.write('[+] token=' + crypto.randomBytes(8).toString('hex'));
+    res.write('[+] token=' + token);
     res.end();
   };
 
@@ -91,7 +94,9 @@ var RequestHandler = (function() {
     req.on('end', function() {
       var data = querystring.parse(postData);
 
-      if (data.user === USERNAME && data.password === PASSWORD) {
+      if (TOKENS.indexOf(data.authenticity_token) === -1) {
+        serverError(res);
+      } else if (data.user === USERNAME && data.password === PASSWORD) {
         allowed(res);
       } else {
         denied(res);
@@ -101,6 +106,12 @@ var RequestHandler = (function() {
   //
   // Private
   //
+  function serverError(res) {
+    res.writeHead(500, {'Content-Type': 'text/plain'});
+    res.write('[-] Invalid token');
+    res.end();
+  }
+
   function allowed(res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.write('Welcome legitimate user');
@@ -108,9 +119,20 @@ var RequestHandler = (function() {
   }
 
   function denied(res) {
+    var token = generateToken();
+
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.write('Bad login');
+    res.write('[+] token=' + token);
     res.end();
+  }
+
+  function generateToken() {
+    var token = crypto.randomBytes(8).toString('hex');
+
+    TOKENS.push(token);
+    
+    return token;
   }
 
   return module;
