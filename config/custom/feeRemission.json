@@ -1,0 +1,28 @@
+{
+  "capture": {
+    "csrfRegex": "name=\"authenticity_token\" value=\"(.{88})\" \/>",
+    "loginRegex": [
+      "Invalid email or password"
+    ]
+  },
+  "csrf": {
+    "url": "%URL%",
+    "method": "GET",
+    "headers": {},
+    "rejectUnauthorized": false
+  },
+  "login": {
+    "url": "%URL%",
+    "method": "POST",
+    "headers": {
+      "Cookie": "%COOKIE%"
+    },
+    "form": {
+      "authenticity_token": "%TOKEN%",
+      "user[email]": "%USER%",
+      "user[password]": "%PASS%",
+      "commit": "Sign+in"
+    },
+    "rejectUnauthorized": false
+  }
+}

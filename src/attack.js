@@ -34,40 +34,70 @@ function launch(config, onSuccess, onFail) {
   // Private 
   // ==============================================================================================
 
-  // Extract CSRF token
+  // Array of token data
+  var tokenPool = [];
+
+  // Get a CSRF token from the pool if available, otherwise request one
   function getCSRF(callback) {
+    var tokenData = tokenPool.pop();
+
+    if (tokenData) {
+      callback.apply(tokenData);
+    } else {
+      requestCSRF(callback);
+    }
+  }
+
+  // Request CSRF token from server
+  function requestCSRF(callback) {
     var reqConfig = config.getAdvanced();
 
     request(reqConfig.csrf, function (error, response, body) {
 
       if (!error && response.statusCode === 200) {
-        var cookieString = response.headers['set-cookie'];
-        var capture      = body.match(new RegExp(reqConfig.capture.csrfRegex));
+        
+        collectCSRF(response, body, reqConfig.capture.csrfRegex, callback);
 
-        if (!capture) {
-          logger.error('CSRF token not found');
-          logger.info('Debug info:\n');
-          logger.info(body);
-          onFail();
-        }
-
-        callback(capture[1], cookieString);
       } else {
+        
         logger.warn('Server responded with: ' + response.statusCode);
         onFail();
+
       }
     });
   }
 
-  // Process server response to a login attemot
+  // Collect CSRF token from response body and save to token pool
+  function collectCSRF(response, body, csrfRegex, callback) {
+
+    var cookieString = response.headers['set-cookie'];
+    var capture      = body.match(new RegExp(csrfRegex));
+
+    if (!capture) {
+      logger.error('CSRF token not found');
+      logger.info('Debug info:\n');
+      logger.info(body);
+      onFail();
+    }
+
+    callback(capture[1], cookieString);
+  }
+
+  // Process server response to a login attempt
   function processLoginResponse(response, body, password) {
     
     // If we match known regex (can be multiple) password is incorrect
-    var loginFailures = config.getAdvanced().capture.loginRegex;
+    var captureConfig = config.getAdvanced().capture;
+    var loginFailures = captureConfig.loginRegex;
+    var csrfRegex     = captureConfig.csrfRegex;
 
     if (response.statusCode === 200 && matchAny(loginFailures, body)) { 
 
       logger.info('Invalid: ' + password);
+      
+      collectCSRF(response, body, csrfRegex, function(token, cookieString) {
+        tokenPool.push([token, cookieString]);
+      });
 
     } else if (response.statusCode < 400) {
 
@@ -79,6 +109,7 @@ function launch(config, onSuccess, onFail) {
       
       logger.warn('Server responded with: ' + response.statusCode);
       onFail();
+
     }
   }
 

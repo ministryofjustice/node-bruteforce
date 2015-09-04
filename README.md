@@ -37,7 +37,7 @@ Please use responsibly!
 
   Examples:
 
-    $ ./run.js -u root -w words.txt -N 50-t http://localhost:8000/admin -T django
+    $ ./run.js -u root -w words.txt -N 50 -t http://localhost:8000/admin -T django
     $ ./run.js -u admin@rails.com -w words.txt -N 35 -t http://localhost:3000/users/sign_in -T rails
     $ ./run.js -u root -w words.txt-t http://dvwa/login -c config/dvwa.json
 
@@ -72,10 +72,8 @@ Test runs are handled via grunt. A mini web application instance is spawned at t
   >> 12 files lint free.
 
   Running "mochaTest:test" (mochaTest) task
+  ...
 
 ```
 
-### To Do
-
-On failed request store CSRF token to a pool. When launching a new login attack check whether any tokens available in the pool. If yes use that one, otherwise go through the whole process...
 

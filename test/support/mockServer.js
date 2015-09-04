@@ -110,6 +110,7 @@ var RequestHandler = (function() {
   function denied(res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.write('Bad login');
+    res.write('[+] token=' + crypto.randomBytes(8).toString('hex'));
     res.end();
   }
 
