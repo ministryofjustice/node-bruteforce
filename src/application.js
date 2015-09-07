@@ -30,17 +30,19 @@ function run(cliArgs) {
   
   var config = configBuilder.fromOptions(opt);
 
-  // Launch the attack
-  logger.info('Starting bruteforce...');
-
-  function exitSuccess() {
+  // Define callback on finding password
+  function exitSuccess(password) {
     process.exit(0);
   }
 
+  // Define callback on error
   function exitError() {
     process.exit(1);
   }
   
+  // Launch the attack
+  logger.info('Starting bruteforce...');
+
   attack.launch(
     config,
     exitSuccess,

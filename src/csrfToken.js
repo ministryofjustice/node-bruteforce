@@ -13,10 +13,10 @@ module.exports = function(config, onSuccess, onFail) {
  // Public API
  // ================================================================================================
   
-  module.tokenPool = [];
+  module.pool = [];
 
   module.fetch = function(callback) {
-    var sample = module.tokenPool.pop();
+    var sample = module.pool.pop();
 
     if (sample) {
       callback(sample.token, sample.cookie);
@@ -25,7 +25,7 @@ module.exports = function(config, onSuccess, onFail) {
     }
   };
 
-  module.collect = function(response, body, csrfRegex, callback) {
+  module.extractFromResponse = function(response, body, csrfRegex, callback) {
     var cookieString = response.headers['set-cookie'] || '';
     var capture      = body.match(new RegExp(csrfRegex));
 
@@ -52,7 +52,7 @@ module.exports = function(config, onSuccess, onFail) {
 
       if (!error && response.statusCode === 200) {
         
-        module.collect(
+        module.extractFromResponse(
           response, 
           body, 
           reqConfig.capture.csrfRegex, 

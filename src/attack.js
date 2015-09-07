@@ -9,8 +9,8 @@ var logger  = require('./logger.js');
 // ================================================================================================
 
 function launch(config, onSuccess, onFail) {
-  var csrf  = require('./csrf.js')(config, onSuccess, onFail);
-  var queue = async.queue(tryLogin, config.concurrency);
+  var csrfToken = require('./csrfToken.js')(config, onSuccess, onFail);
+  var queue     = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
     logger.info('Finished');
@@ -47,8 +47,8 @@ function launch(config, onSuccess, onFail) {
 
       logger.info('Invalid: ' + password);
       
-      csrf.collect(response, body, csrfRegex, function(token, cookieString) {
-        csrf.tokenPool.push({ 
+      csrfToken.extractFromResponse(response, body, csrfRegex, function(token, cookieString) {
+        csrfToken.pool.push({ 
           token: token, 
           cookie: cookieString 
         });
@@ -71,7 +71,7 @@ function launch(config, onSuccess, onFail) {
   // Attempt to login with given password
   function tryLogin(password, callback) {
 
-    csrf.fetch(function(token, cookieString) {
+    csrfToken.fetch(function(token, cookieString) {
       var opt = config.getLogin(password, token, cookieString);
 
       // Send a login POST
