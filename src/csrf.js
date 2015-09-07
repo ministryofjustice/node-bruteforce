@@ -1,15 +1,19 @@
 var request = require('request');
 var logger  = require('./logger.js');
 
+// ================================================================================================
+// Handle collecting and storing CSRF tokens
+// ================================================================================================
+
 module.exports = function(config, onSuccess, onFail) {
 
   var module = {};
 
-  // Public Variables
-
+ // ================================================================================================
+ // Public API
+ // ================================================================================================
+  
   module.tokenPool = [];
-
-  // Public Methods
 
   module.fetch = function(callback) {
     var sample = module.tokenPool.pop();
@@ -37,7 +41,9 @@ module.exports = function(config, onSuccess, onFail) {
     callback(capture[1], cookieString);
   };
 
-  // Private Methods
+  // ================================================================================================
+  // Private
+  // ================================================================================================
 
   function requestFromTarget(callback) {
     var reqConfig = config.getAdvanced();

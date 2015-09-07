@@ -5,7 +5,7 @@ var request = require('request');
 var logger  = require('./logger.js');
 
 // ================================================================================================
-// Public API
+// Manage login attempts to target
 // ================================================================================================
 
 function launch(config, onSuccess, onFail) {
