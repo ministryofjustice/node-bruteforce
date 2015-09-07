@@ -25,7 +25,7 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: ['<%= jshint.files %>'],
-        tasks: ['jshint', 'mocha-chai-sinon'],
+        tasks: ['jshint'],
         options: {
           deboundeDelay: 10000
         }
