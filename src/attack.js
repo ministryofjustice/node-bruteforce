@@ -8,8 +8,8 @@ var logger  = require('./logger.js');
 // Manage login attempts to target
 // ================================================================================================
 
-function launch(config, onSuccess, onFail) {
-  var csrfToken = require('./csrfToken.js')(config, onSuccess, onFail);
+function launch(config, onSuccess, onError) {
+  var csrfToken = require('./csrfToken.js')(config, onSuccess, onError);
   var queue     = async.queue(tryLogin, config.concurrency);
 
   queue.drain = function() {
@@ -63,7 +63,7 @@ function launch(config, onSuccess, onFail) {
     } else {
       
       logger.warn('Server responded with: ' + response.statusCode);
-      onFail();
+      onError();
 
     }
   }

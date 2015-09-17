@@ -28,16 +28,19 @@ function run(cliArgs) {
 
   logger.info('Parsing configuration');
   
-  var config = configBuilder.fromOptions(opt);
+  var config    = configBuilder.fromOptions(opt);
+  var numErrors = 0;
 
   // Define callback on finding password
-  function exitSuccess(password) {
+  function onSuccess(password) {
     process.exit(0);
   }
 
   // Define callback on error
-  function exitError() {
-    process.exit(1);
+  function onError() {
+    if (++numErrors > program.errorThreshold) {
+      process.exit(1);
+    }
   }
   
   // Launch the attack
@@ -45,8 +48,8 @@ function run(cliArgs) {
 
   attack.launch(
     config,
-    exitSuccess,
-    exitError
+    onSuccess,
+    onError
   );
 }
 

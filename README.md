@@ -76,4 +76,9 @@ Test runs are handled via grunt. A mini web application instance is spawned at t
 
 ```
 
+### TODO
+
++ Better name!
++ Trap SIGINT signal. Shutdown gracefully and give ability to restore session using -R flag
+
 

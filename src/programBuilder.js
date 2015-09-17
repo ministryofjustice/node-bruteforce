@@ -16,7 +16,8 @@ function fromArgs(args) {
     .option('-t, --target <url>', 'target sign in url')
     .option('-N, --num-requests [n]', 'maximum concurrent requests (default 25)', 25)
     .option('-T, --type [framework]', 'specify target framework', /^(rails|django)$/i, false)
-    .option('-c, --config [file]', 'custom .json config file');
+    .option('-c, --config [file]', 'custom .json config file')
+    .option('-e, --error-threshold [n]', 'maximum errors before shutdown (default 10)', 10);
 
   // Add examples to help menu
   program.on('--help', function() {

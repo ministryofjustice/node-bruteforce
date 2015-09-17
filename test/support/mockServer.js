@@ -141,8 +141,6 @@ var RequestHandler = (function() {
 //
 // Main
 //
-console.log('[+] Starting mini web application on port ' + PORT);
-
 var handle = {};
 
 handle['/csrf']              = RequestHandler.csrf;
@@ -151,3 +149,5 @@ handle['/login']             = RequestHandler.login;
 handle['404']                = RequestHandler.notFound;
 
 httpServer.start(Router.route, handle);
+
+console.log('>> Mini web application running port ' + PORT);

@@ -5,7 +5,7 @@ var logger  = require('./logger.js');
 // Handle collecting and storing CSRF tokens
 // ================================================================================================
 
-module.exports = function(config, onSuccess, onFail) {
+module.exports = function(config, onSuccess, onError) {
 
   var module = {};
 
@@ -34,7 +34,7 @@ module.exports = function(config, onSuccess, onFail) {
       logger.error('CSRF token not found');
       logger.info('Debug info:\n');
       logger.info(body);
-      onFail();
+      onError();
 
     }
 
@@ -62,7 +62,7 @@ module.exports = function(config, onSuccess, onFail) {
       } else {
         
         logger.warn('Server responded with: ' + response.statusCode);
-        onFail();
+        onError();
 
       }
     });
